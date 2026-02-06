@@ -2,4 +2,5 @@
 
 source "https://rubygems.org"
 
-gem "lumitrace"
+gem "lumitrace", path: ".."
+gem "rake"
