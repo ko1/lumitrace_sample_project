@@ -4,3 +4,4 @@ source "https://rubygems.org"
 
 gem "lumitrace"
 gem "rake"
+gem "minitest"
