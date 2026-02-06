@@ -23,7 +23,7 @@ jobs:
 
       - name: Run tests with Lumitrace
         env:
-          LUMITRACE_GIT_DIFF: ${{ github.event_name == pull_request && format(range:origin/{0}...HEAD, github.base_ref) || range:HEAD~1...HEAD }}
+          LUMITRACE_GIT_DIFF: ${{ github.event_name == 'pull_request' && format('range:origin/{0}...HEAD', github.base_ref) || 'range:HEAD~1...HEAD' }}
           LUMITRACE_HTML_OUT: "${{ github.workspace }}/lumitrace_recorded.html"
         run: RUBYOPT='-r lumitrace/enable_git_diff' bundle exec rake test
 
