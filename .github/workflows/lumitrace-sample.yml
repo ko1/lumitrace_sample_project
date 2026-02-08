@@ -23,6 +23,7 @@ jobs:
           ruby-version: "4.0"
 
       - name: Install dependencies
+        working-directory: sample/sample_project
         run: bundle install
 
       - name: Debug repo context
@@ -35,19 +36,19 @@ jobs:
       - name: Run tests with Lumitrace
         env:
           LUMITRACE_GIT_DIFF: ${{ github.event_name == 'pull_request' && format('range:origin/{0}...HEAD', github.base_ref) || 'range:HEAD~1...HEAD' }}
-          LUMITRACE_HTML_OUT: "${{ github.workspace }}/lumitrace_recorded.html"
-        run: bundle exec ruby -r lumitrace/enable_git_diff test/test_sample_test.rb
+        working-directory: sample/sample_project
+        run: bundle exec lumitrace -v -t --html=lumitrace_recorded.html exec rake test
 
       - name: Prepare Pages content
         run: |
           mkdir -p public
-          cp lumitrace_recorded.html public/index.html
+          cp sample/sample_project/lumitrace_recorded.html public/index.html
 
       - name: Upload Lumitrace HTML
         uses: actions/upload-artifact@v4
         with:
           name: lumitrace-recorded-html
-          path: lumitrace_recorded.html
+          path: sample/sample_project/lumitrace_recorded.html
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
