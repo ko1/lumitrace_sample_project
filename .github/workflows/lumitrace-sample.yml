@@ -31,6 +31,7 @@ jobs:
           echo "ref: ${{ github.ref }}"
           echo "base_ref: ${{ github.base_ref }}"
           echo "head_ref: ${{ github.head_ref }}"
+          echo "default_branch: ${{ github.event.repository.default_branch }}"
           echo "sha: ${{ github.sha }}"
           echo "before: ${{ github.event.before }}"
           if [ "${{ github.event_name }}" = "pull_request" ]; then
@@ -46,7 +47,13 @@ jobs:
             BASE_SHA=$(git merge-base "origin/${{ github.base_ref }}" HEAD)
             echo "LUMITRACE_GIT_DIFF=range:${BASE_SHA}...HEAD" >> "$GITHUB_ENV"
           else
-            echo "LUMITRACE_GIT_DIFF=range:${{ github.event.before }}...${{ github.sha }}" >> "$GITHUB_ENV"
+            DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+            if [ "${{ github.ref }}" = "refs/heads/${DEFAULT_BRANCH}" ]; then
+              echo "LUMITRACE_GIT_DIFF=range:${{ github.event.before }}...${{ github.sha }}" >> "$GITHUB_ENV"
+            else
+              BASE_SHA=$(git merge-base "origin/${DEFAULT_BRANCH}" HEAD)
+              echo "LUMITRACE_GIT_DIFF=range:${BASE_SHA}...HEAD" >> "$GITHUB_ENV"
+            fi
           fi
 
       - name: Run tests with Lumitrace
