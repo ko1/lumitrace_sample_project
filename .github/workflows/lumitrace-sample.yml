@@ -27,7 +27,7 @@ jobs:
 
       - name: Run tests with Lumitrace
         env:
-          LUMITRACE_GIT_DIFF: ${{ github.event_name == 'pull_request' && format('range:origin/{0}...HEAD', github.base_ref) || 'range:HEAD~1...HEAD' }}
+          LUMITRACE_GIT_DIFF: ${{ github.event_name == 'pull_request' && format('range:origin/{0}...HEAD', github.base_ref) || format('range:{0}...{1}', github.event.before, github.sha) }}
         run: bundle exec lumitrace -v -t --html=lumitrace_recorded.html exec rake test
 
       - name: Prepare Pages content
