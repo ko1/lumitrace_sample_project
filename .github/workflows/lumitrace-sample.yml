@@ -25,9 +25,16 @@ jobs:
       - name: Install dependencies
         run: bundle install
 
+      - name: Compute diff range
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_SHA=$(git merge-base "origin/${{ github.base_ref }}" HEAD)
+            echo "LUMITRACE_GIT_DIFF=range:${BASE_SHA}...HEAD" >> "$GITHUB_ENV"
+          else
+            echo "LUMITRACE_GIT_DIFF=range:${{ github.event.before }}...${{ github.sha }}" >> "$GITHUB_ENV"
+          fi
+
       - name: Run tests with Lumitrace
-        env:
-          LUMITRACE_GIT_DIFF: ${{ github.event_name == 'pull_request' && format('range:{0}...{1}', github.event.pull_request.base.sha, github.event.pull_request.head.sha) || format('range:{0}...{1}', github.event.before, github.sha) }}
         run: bundle exec lumitrace -v -t --html=lumitrace_recorded.html exec rake test
 
       - name: Prepare Pages content
