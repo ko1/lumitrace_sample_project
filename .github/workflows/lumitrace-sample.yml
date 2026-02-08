@@ -27,6 +27,21 @@ jobs:
 
       - name: Compute diff range
         run: |
+          echo "event: ${{ github.event_name }}"
+          echo "ref: ${{ github.ref }}"
+          echo "base_ref: ${{ github.base_ref }}"
+          echo "head_ref: ${{ github.head_ref }}"
+          echo "sha: ${{ github.sha }}"
+          echo "before: ${{ github.event.before }}"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "pr.base.sha: ${{ github.event.pull_request.base.sha }}"
+            echo "pr.head.sha: ${{ github.event.pull_request.head.sha }}"
+          fi
+          echo "git HEAD: $(git rev-parse HEAD)"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "git base ref: $(git rev-parse origin/${{ github.base_ref }})"
+            echo "git merge-base: $(git merge-base origin/${{ github.base_ref }} HEAD)"
+          fi
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             BASE_SHA=$(git merge-base "origin/${{ github.base_ref }}" HEAD)
             echo "LUMITRACE_GIT_DIFF=range:${BASE_SHA}...HEAD" >> "$GITHUB_ENV"
