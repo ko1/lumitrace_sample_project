@@ -62,5 +62,5 @@ steps:
       artifact_name: lumitrace-pages
 ```
 
-The HTML report is published to: [](https://ko1.github.io/lumitrace_sample_project/)
+The HTML report is published to: [https://ko1.github.io/lumitrace_sample_project/](https://ko1.github.io/lumitrace_sample_project/)
 
